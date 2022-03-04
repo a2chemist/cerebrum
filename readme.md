@@ -11,8 +11,8 @@ This project just interprets BrainFuck code on Discord. If you want to implement
 
 ### Thumbnails
 <p align="center">
-	![](https://user-images.githubusercontent.com/76060406/156677693-48044309-f29f-47ad-a0ab-6b837e6921c6.png)
-	![](https://user-images.githubusercontent.com/76060406/156677611-d4d3b772-9f85-47c6-9b3a-dc49e02859cc.png)
+	<img src="https://user-images.githubusercontent.com/76060406/156677693-48044309-f29f-47ad-a0ab-6b837e6921c6.png">
+	<img src="https://user-images.githubusercontent.com/76060406/156677611-d4d3b772-9f85-47c6-9b3a-dc49e02859cc.png">
 </p>
 
 ### Resources
