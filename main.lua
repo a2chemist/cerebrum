@@ -1,5 +1,3 @@
--- A brainfuck interpreter file.
-
 return function(code, keys)
     local answers = {}
 
