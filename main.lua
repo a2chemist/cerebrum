@@ -1,79 +1,83 @@
-return function(code, keys)
-    local answers = {}
+local write = io.write
+local read = io.read
+local open = io.open
 
-    if keys then
-        for v in keys:gmatch("%S+") do
-            answers[#answers + 1] = v
-        end
-    end
+print('================== INTERPRETER ==================')
+print('[iii] Welcome to the "cerebrum" interpreter!')
+print('[iii] "cerebrum" is for the esoteric brainfuck language.')
+write('[iii] If you would, please enter your file path:  ')
 
-    local scan = ""
-    local cells = {0}
-    local loops = {}
-    local brainfuck = {}
-    local i = 1
-    local ptr = 1
-    local chars = {}
+local path = read()
+local mark = os.time()
 
-    for _, v in ipairs({"+", "-", "<", ">", "[", "]", ".", ","}) do
-        chars[v] = true
-    end
+print('[iii] Okay, now attempting to read your file...')
 
-    for v in code:gsub("%s+", ""):gsub("%c+", ""):gmatch(".") do
-        if not chars[v] then
-            return {
-                ran = false,
-                ptr = ptr,
-                msg = "Attempted to interpret with an invalid character."
-            }
-        end
+local file = open(path, 'r')
 
-        brainfuck[#brainfuck + 1] = v
-    end
-
-    while (i < (#code + 1)) do
-        local v = brainfuck[i]
-        
-        if v == ">" then
-            ptr = ptr + 1
-            cells[ptr] = (cells[ptr] or 0)
-        elseif v == "<" then
-            if ptr == 0 then
-                return {
-                    ran = false,
-                    ptr = ptr,
-                    msg = "Attempted to access an inexistent cell."
-                }
-            end
-        
-            ptr = ptr - 1
-            cells[ptr] = (cells[ptr] or 0)
-        elseif v == "," then
-            if answers[ptr] then
-                scan = scan .. answers[ptr]
-            end
-        elseif v == "+" then
-            cells[ptr] = cells[ptr] + 1
-        elseif v == "-" then
-            cells[ptr] = cells[ptr] - 1
-        elseif v == "." then
-            scan = scan .. string.char(cells[ptr])
-        elseif v == "[" then
-            loops[#loops + 1] = i
-        elseif v == "]" then
-            if cells[ptr] == 0 then
-                table.remove(loops, 1)
-            else
-                i = loops[#loops]
-            end
-        end
-
-        i = i + 1
-    end
-
-    return {
-        ran = true,
-        scan = scan,
-        cells = cells
-    }
+if not file then
+	error('[!!!] Your file path was incorrect.')
 end
+
+print('[iii] Your file exists! Now organizing it...')
+
+local script = {}
+
+for a in file:lines() do
+	for b in a:gsub('%s+', ''):gmatch('.') do
+		table.insert(script, b)
+	end
+end
+
+print('[iii] Done! Now understanding the program...')
+print('==================== SCRIPT ====================')
+
+local i = 1
+local arrow = 1
+local cells = {0}
+local str = ''
+local loops = {}
+
+while i < (#script + 1) do
+	local c = script[i]
+
+	if c == '+' then
+		cells[arrow] = cells[arrow] + 1
+	elseif c == '-' then
+		cells[arrow] = cells[arrow] - 1
+	elseif c == '>' then
+		arrow = arrow + 1
+
+		cells[arrow] = cells[arrow] or 0
+	elseif c == '<' then
+		if arrow == 0 then
+			error('[aaa] Negative cell access detected.')
+		end
+
+		arrow = arrow - 1
+	elseif c == ',' then
+		write('[qqq] Enter a character: ')
+		
+		cells[arrow] = read():match('%S'):byte()
+	elseif c == '.' then
+		str = str .. string.char(cells[arrow])
+	elseif c == '[' then
+		table.insert(loops, i)
+	elseif c == ']' then
+		if cells[arrow] == 0 then
+			table.remove(loops, 1)
+		else
+			i = loops[#loops] or error('[!!!] Unfinished loop detected.')
+		end
+	else
+		i = i + 0
+	end
+
+	i = i + 1
+end
+
+print(('[iii] Returned output:  "%s"'):format(str))
+print(('[iii] Time it took to handle:  %dms'):format(os.time() - mark))
+print('================== CREDIT ==================')
+print('[iii] Credits to "no5trum" on GitHub.')
+print('[iii] Message me on Discord to report any bugs!')
+print('[iii] Thanks for using "cerebrum".')
